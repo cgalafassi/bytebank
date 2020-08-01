@@ -1,33 +1,36 @@
 import 'dart:convert';
 
+import 'package:bytebank/dao/transaction_dao.dart';
 import 'package:bytebank/models/transaction.dart';
-import 'package:bytebank/models/contact.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 import 'httpinterceptor.dart';
+const String baseUrl = 'http://192.168.0.105:8080/transactions';
+
+Client client = HttpClientWithInterceptor.build(interceptors: [
+  LoggingInterceptor(),
+]);
 
 Future<List<Transaction>> findAllTransactions() async {
-  Client client = HttpClientWithInterceptor.build(interceptors: [
-    LoggingInterceptor(),
-  ]);
   final Response response = await client
-      .get('http://192.168.0.105:8080/transactions')
+      .get(baseUrl)
       .timeout(Duration(seconds: 5));
   final List<dynamic> decodedJson = jsonDecode(response.body);
-  final List<Transaction> transactions = List();
-  for (Map<String, dynamic> transactionJson in decodedJson) {
-    final Map<String, dynamic> contactJson = transactionJson['contact'];
-    final Transaction transaction = Transaction(
-      transactionJson['value'],
-      Contact(
-        0,
-        contactJson['name'],
-        contactJson['accountNumber'],
-      ),
-    );
-    transactions.add(transaction);
-  }
+  return TransactionDao().toListFromJson(decodedJson);
+}
 
-  return transactions;
+
+Future<Transaction> saveTransaction(Transaction transaction) async {
+  final TransactionDao _transactionDao = TransactionDao();
+  final Map<String, dynamic> transactionMap = _transactionDao.toMap(transaction);
+
+  final String transactionJson = jsonEncode(transactionMap);
+
+  final Response response = await client.post(baseUrl, headers: {
+    'Content-type': 'application/json',
+    'password': '1000',
+  }, body: transactionJson);
+
+  return _transactionDao.fromJson(jsonDecode(response.body));
 }

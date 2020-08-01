@@ -10,7 +10,7 @@ Future<Database> getTable(String sql) async {
       db.execute(sql);
     },
     version: 1,
-//      onDowngrade: onDatabaseDowngradeDelete,
+//     onDowngrade: onDatabaseDowngradeDelete,
   );
 }
 

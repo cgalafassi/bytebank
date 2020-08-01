@@ -11,15 +11,15 @@ class ContactDao {
   static const String _tableName = 'contacts';
   static const String _id = 'id';
   static const String _name = 'name';
-  static const String _accountNumber = 'account_number';
+  static const String _accountNumber = 'accountNumber';
 
   Future<int> saveContact(Contact contact) async {
     final Database db = await getTable(tableSql);
-    Map<String, dynamic> contactMap = _toMap(contact);
+    Map<String, dynamic> contactMap = toMap(contact);
     return db.insert(_tableName, contactMap);
   }
 
-  Map<String, dynamic> _toMap(Contact contact) {
+  Map<String, dynamic> toMap(Contact contact) {
     final Map<String, dynamic> contactMap = Map();
     contactMap[_name] = contact.name;
     contactMap[_accountNumber] = contact.accountNumber;
@@ -44,5 +44,13 @@ class ContactDao {
       contacts.add(contact);
     }
     return contacts;
+  }
+
+  Contact fromJson(json) {
+    return Contact(
+      0,
+      json[_name],
+      json[_accountNumber],
+    );
   }
 }

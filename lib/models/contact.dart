@@ -4,7 +4,7 @@ class Contact {
   final int accountNumber;
 
   Contact(
-      this.id,
+    this.id,
     this.name,
     this.accountNumber,
   );
