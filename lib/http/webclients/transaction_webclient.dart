@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bytebank/http/webclient.dart';
 import 'package:bytebank/models/transaction.dart';
 import 'package:http/http.dart';
-//teste
+
 class TransactionWebClient extends WebClient {
   Future<List<Transaction>> findAllTransactions() async {
     final Response response =
