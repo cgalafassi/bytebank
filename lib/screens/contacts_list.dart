@@ -2,12 +2,14 @@ import 'package:bytebank/components/centered_message.dart';
 import 'package:bytebank/components/progress.dart';
 import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/models/contact.dart';
+import 'package:bytebank/screens/transaction_form.dart';
 import 'package:flutter/material.dart';
 
 import 'contacts_form.dart';
 
 class ContactsList extends StatefulWidget {
   ContactsList(this.textTitle);
+
   final String textTitle;
 
   @override
@@ -18,6 +20,7 @@ class _ContactsListState extends State<ContactsList> {
   final ContactDao _contactDao = ContactDao();
 
   _ContactsListState(this.textTitle);
+
   final String textTitle;
 
   @override
@@ -46,7 +49,13 @@ class _ContactsListState extends State<ContactsList> {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   final Contact contact = contacts[index];
-                  return _ContactItem(contact);
+                  return _ContactItem(contact, onClick: () {
+                    Navigator.of(context).push(
+                      (MaterialPageRoute(
+                        builder: (context) => TransactionForm(contact),
+                      )),
+                    );
+                  });
                 },
                 itemCount: contacts.length,
               );
@@ -71,16 +80,17 @@ class _ContactsListState extends State<ContactsList> {
   }
 }
 
-
 class _ContactItem extends StatelessWidget {
   final Contact _contact;
+  final Function onClick;
 
-  const _ContactItem(this._contact);
+  const _ContactItem(this._contact, {@required this.onClick});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: () => onClick(),
         title: Text(
           _contact.name,
           style: TextStyle(fontSize: 24.0),
