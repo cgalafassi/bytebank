@@ -45,12 +45,4 @@ class ContactDao {
     }
     return contacts;
   }
-
-  Contact fromJson(json) {
-    return Contact(
-      0,
-      json[_name],
-      json[_accountNumber],
-    );
-  }
 }
