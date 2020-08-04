@@ -66,7 +66,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       final transactionCreated =
                           Transaction(value, widget.contact);
                       if (value != null && value > 0.0) {
-                        showDialog(context: context, builder: (context) {
+                        showDialog(context: context, builder: (contextDialog) {
                           return TransactionAuthDialog(onConfirm: (String password){
                             _webClient
                                 .saveTransaction(transactionCreated, password)
