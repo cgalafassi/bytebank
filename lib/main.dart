@@ -13,7 +13,7 @@ class BytebankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: TransactionAuthDialog(),//Dashboard(),
+      home: Dashboard(),
       theme: buildThemeData(),
     );
   }
