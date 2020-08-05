@@ -5,6 +5,11 @@ import 'package:bytebank/models/transaction.dart';
 import 'package:http/http.dart';
 
 class TransactionWebClient extends WebClient {
+  static final Map<int, String> _statusCodeResponses = {
+    400: 'there was an error submitting transaction',
+    401: 'authentication failed',
+  };
+
   Future<List<Transaction>> findAllTransactions() async {
     final Response response =
         await client.get(baseUrl).timeout(Duration(seconds: 5));
@@ -14,7 +19,8 @@ class TransactionWebClient extends WebClient {
         .toList();
   }
 
-  Future<Transaction> saveTransaction(Transaction transaction, String password) async {
+  Future<Transaction> saveTransaction(
+      Transaction transaction, String password) async {
     final String transactionJson = jsonEncode(transaction.toJson());
 
     final Response response = await client.post(baseUrl,
@@ -24,14 +30,10 @@ class TransactionWebClient extends WebClient {
         },
         body: transactionJson);
 
-    if(response.statusCode == 400){
-      throw Exception('there was an error submitting transaction');
+    if (response.statusCode == 200) {
+      return Transaction.fromJson(jsonDecode(response.body));
     }
 
-    if(response.statusCode == 401){
-      throw Exception('authentication failed');
-    }
-
-    return Transaction.fromJson(jsonDecode(response.body));
+    throw Exception(_statusCodeResponses[response.statusCode]);
   }
 }
