@@ -109,14 +109,25 @@ class _TransactionFormState extends State<TransactionForm> {
     String password,
     BuildContext context,
   ) async {
+    Transaction transaction =
+        await _sendTransaction(transactionCreated, password, context);
+
+    _showSuccessDialog(transaction, context);
+  }
+
+  Future<Transaction> _sendTransaction(Transaction transactionCreated, String password,
+      BuildContext context) async {
     final Transaction transaction = await _webClient
         .saveTransaction(transactionCreated, password)
-        .catchError((e) => _showFailureDialog(context, e),
+        .catchError((e) => _showFailureDialog(context, message: e.message),
             test: (e) => e is HttpException)
-        .catchError((e) => _showFailureDialog(context, e),
-            test: (e) => e is TimeoutException);
+        .catchError(
+            (e) => _showFailureDialog(context,
+                message: 'timeout submitting the transaction'),
+            test: (e) => e is TimeoutException)
+        .catchError((e) => _showFailureDialog(context));
 
-    await _showSuccessDialog(transaction, context);
+    return transaction;
   }
 
   Future _showSuccessDialog(
@@ -131,11 +142,12 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  Future _showFailureDialog(BuildContext context, e) {
+  Future _showFailureDialog(BuildContext context,
+      {String message = 'Unkown error'}) {
     return showDialog(
         context: context,
         builder: (contextDialog) {
-          return FailureDialog(e.message);
+          return FailureDialog(message);
         });
   }
 }
