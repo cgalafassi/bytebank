@@ -1,3 +1,4 @@
+import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/models/contact.dart';
@@ -17,6 +18,8 @@ class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebClient _webClient = TransactionWebClient();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,64 +29,100 @@ class _TransactionFormState extends State<TransactionForm> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                widget.contact.name,
-                style: TextStyle(
-                  fontSize: 24.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  widget.contact.accountNumber.toString(),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  widget.contact.name,
                   style: TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: TextField(
-                  controller: _valueController,
-                  style: TextStyle(fontSize: 24.0),
-                  decoration: InputDecoration(labelText: 'Value'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Text(
+                    widget.contact.accountNumber.toString(),
+                    style: TextStyle(
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: RaisedButton(
-                    child: Text('Transfer'),
-                    onPressed: () {
-                      final double value =
-                          double.tryParse(_valueController.text);
-                      final transactionCreated =
-                          Transaction(value, widget.contact);
-                      if (value != null && value > 0.0) {
-                        showDialog(context: context, builder: (contextDialog) {
-                          return TransactionAuthDialog(onConfirm: (String password){
-                            _webClient
-                                .saveTransaction(transactionCreated, password)
-                                .then((value) {
-                                Navigator.pop(context);
-                            });
-                          },);
-                        });
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
                       }
+                      return null;
                     },
+                    controller: _valueController,
+                    style: TextStyle(fontSize: 24.0),
+                    decoration: InputDecoration(labelText: 'Value'),
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
                   ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: RaisedButton(
+                      child: Text('Transfer'),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          _formValid(context);
+                        }
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _formValid(BuildContext context) {
+    final double value = double.tryParse(_valueController.text);
+    final transactionCreated = Transaction(value, widget.contact);
+    showDialog(
+        context: context,
+        builder: (contextDialog) {
+          return TransactionAuthDialog(
+            onConfirm: (String password) {
+              _save(transactionCreated, password, context);
+            },
+          );
+        });
+  }
+
+  void _save(
+    Transaction transactionCreated,
+    String password,
+    BuildContext context,
+  ) async {
+    _webClient
+        .saveTransaction(transactionCreated, password)
+        .then((transaction) {
+      if (transaction != null) {
+        showDialog(
+            context: context,
+            builder: (contextDialog) {
+              return SuccessDialog('successful transaction');
+            }).then((value) => Navigator.pop(context));
+      }
+    }).catchError((e) {
+      showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return FailureDialog(e.message);
+          });
+    }, test: (e) => e is Exception);
   }
 }
