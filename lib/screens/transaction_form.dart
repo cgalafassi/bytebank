@@ -57,7 +57,7 @@ class _TransactionFormState extends State<TransactionForm> {
                   child: TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Please enter some value';
                       }
                       return null;
                     },
