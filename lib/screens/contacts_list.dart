@@ -38,9 +38,7 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Progress(),
-              );
+              return  Progress();
               break;
             case ConnectionState.active:
               break;

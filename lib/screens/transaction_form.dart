@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bytebank/components/progress.dart';
 import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
@@ -21,6 +22,7 @@ class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebClient _webClient = TransactionWebClient();
   final String _transactionID = Uuid().v4();
+  bool _sending = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -38,6 +40,15 @@ class _TransactionFormState extends State<TransactionForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Visibility(
+                  visible: _sending,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Progress(
+                      message: 'Sending...',
+                    ),
+                  ),
+                ),
                 Text(
                   widget.contact.name,
                   style: TextStyle(
@@ -120,6 +131,9 @@ class _TransactionFormState extends State<TransactionForm> {
 
   Future<Transaction> _sendTransaction(Transaction transactionCreated,
       String password, BuildContext context) async {
+    setState(() {
+      _sending = true;
+    });
     final Transaction transaction = await _webClient
         .saveTransaction(transactionCreated, password)
         .catchError((e) => _showFailureDialog(context, message: e.message),
@@ -128,7 +142,12 @@ class _TransactionFormState extends State<TransactionForm> {
             (e) => _showFailureDialog(context,
                 message: 'timeout submitting the transaction'),
             test: (e) => e is TimeoutException)
-        .catchError((e) => _showFailureDialog(context));
+        .catchError((e) => _showFailureDialog(context))
+        .whenComplete(() {
+      setState(() {
+        _sending = false;
+      });
+    });
 
     return transaction;
   }
