@@ -8,11 +8,11 @@ class TransactionWebClient extends WebClient {
   static final Map<int, String> _statusCodeResponses = {
     400: 'there was an error submitting transaction',
     401: 'authentication failed',
+    409: 'transaction already exists',
   };
 
   Future<List<Transaction>> findAllTransactions() async {
-    final Response response =
-        await client.get(baseUrl);
+    final Response response = await client.get(baseUrl);
     final List<dynamic> decodedJson = jsonDecode(response.body);
     return decodedJson
         .map((dynamic transactionJson) => Transaction.fromJson(transactionJson))
@@ -34,7 +34,14 @@ class TransactionWebClient extends WebClient {
       return Transaction.fromJson(jsonDecode(response.body));
     }
 
-    throw HttpException(_statusCodeResponses[response.statusCode]);
+    throw HttpException(_getMessage(response.statusCode));
+  }
+
+  String _getMessage(int statusCode) {
+    if (_statusCodeResponses.containsKey(statusCode)) {
+      return _statusCodeResponses[statusCode];
+    }
+    return 'unknown error';
   }
 }
 

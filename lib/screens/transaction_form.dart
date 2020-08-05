@@ -6,6 +6,7 @@ import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
   final Contact contact;
@@ -19,6 +20,7 @@ class TransactionForm extends StatefulWidget {
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebClient _webClient = TransactionWebClient();
+  final String _transactionID = Uuid().v4();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -92,7 +94,8 @@ class _TransactionFormState extends State<TransactionForm> {
 
   void _formValid(BuildContext context) {
     final double value = double.tryParse(_valueController.text);
-    final transactionCreated = Transaction(value, widget.contact);
+    final transactionCreated =
+        Transaction(_transactionID, value, widget.contact);
     showDialog(
         context: context,
         builder: (contextDialog) {
@@ -115,8 +118,8 @@ class _TransactionFormState extends State<TransactionForm> {
     _showSuccessDialog(transaction, context);
   }
 
-  Future<Transaction> _sendTransaction(Transaction transactionCreated, String password,
-      BuildContext context) async {
+  Future<Transaction> _sendTransaction(Transaction transactionCreated,
+      String password, BuildContext context) async {
     final Transaction transaction = await _webClient
         .saveTransaction(transactionCreated, password)
         .catchError((e) => _showFailureDialog(context, message: e.message),
