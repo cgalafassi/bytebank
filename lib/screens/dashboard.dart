@@ -14,37 +14,44 @@ class Dashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text('Dashboard'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset('images/bytebank_logo.png'),
-          ),
-          Container(
-            height: 120,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+      body: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                FeatureItem(
-                  iconData: Icons.monetization_on,
-                  textTitle: 'Transfer',
-                  onTap: () {
-                    _showContactsList(context, 'Transfer');
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset('images/bytebank_logo.png'),
                 ),
-                FeatureItem(
-                  iconData: Icons.description,
-                  textTitle: 'Transaction Feed',
-                  onTap: () {
-                    _showTransactionList(context, 'Transactions');
-                  },
-                ),
+                Container(
+                  height: 120,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      FeatureItem(
+                        iconData: Icons.monetization_on,
+                        textTitle: 'Transfer',
+                        onTap: () {
+                          _showContactsList(context, 'Transfer');
+                        },
+                      ),
+                      FeatureItem(
+                        iconData: Icons.description,
+                        textTitle: 'Transaction Feed',
+                        onTap: () {
+                          _showTransactionList(context, 'Transactions');
+                        },
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
