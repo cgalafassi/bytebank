@@ -12,11 +12,27 @@ void main() {
     },
   );
 
-  testWidgets('Should display the first feature when the Dashboard is opened',
+  testWidgets(
+      'Should display the transfer feature when the Dashboard is opened',
       (tester) async {
     await tester.pumpWidget(MaterialApp(home: Dashboard()));
-    final firstFeature = find.byType(FeatureItem);
-    expect(firstFeature, findsWidgets);
+    final iconTransferFeatureItem =
+        find.widgetWithIcon(FeatureItem, Icons.monetization_on);
+    expect(iconTransferFeatureItem, findsOneWidget);
+    final nameTransferFeatureItem =
+        find.widgetWithText(FeatureItem, 'Transfer');
+    expect(nameTransferFeatureItem, findsOneWidget);
   });
 
+  testWidgets(
+      'Should display the transaction feed feature when the Dashboard is opened',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(home: Dashboard()));
+    final iconTransferFeatureItem =
+        find.widgetWithIcon(FeatureItem, Icons.description);
+    expect(iconTransferFeatureItem, findsOneWidget);
+    final nameTransferFeatureItem =
+        find.widgetWithText(FeatureItem, 'Transaction Feed');
+    expect(nameTransferFeatureItem, findsOneWidget);
+  });
 }
