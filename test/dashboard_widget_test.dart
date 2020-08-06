@@ -28,11 +28,11 @@ void main() {
       'Should display the transaction feed feature when the Dashboard is opened',
       (tester) async {
     await tester.pumpWidget(MaterialApp(home: Dashboard()));
-    final iconTransferFeatureItem =
+    final iconTransactionFeedFeatureItem =
         find.widgetWithIcon(FeatureItem, Icons.description);
-    expect(iconTransferFeatureItem, findsOneWidget);
-    final nameTransferFeatureItem =
+    expect(iconTransactionFeedFeatureItem, findsOneWidget);
+    final nameTransactionFeedFeatureItem =
         find.widgetWithText(FeatureItem, 'Transaction Feed');
-    expect(nameTransferFeatureItem, findsOneWidget);
+    expect(nameTransactionFeedFeatureItem, findsOneWidget);
   });
 }
