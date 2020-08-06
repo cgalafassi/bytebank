@@ -83,10 +83,10 @@ class FeatureItem extends StatelessWidget {
     @required IconData iconData,
     @required this.textTitle,
     @required this.onTap,
-  })  : _iconData = iconData,
+  })  : iconData = iconData,
         super(key: key);
 
-  final IconData _iconData;
+  final IconData iconData;
   final String textTitle;
   final Function onTap;
 
@@ -108,7 +108,7 @@ class FeatureItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Icon(
-                    _iconData,
+                    iconData,
                     color: Colors.white,
                     size: 24.0,
                   ),
