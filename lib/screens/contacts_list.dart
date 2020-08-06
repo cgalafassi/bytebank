@@ -8,18 +8,19 @@ import 'package:flutter/material.dart';
 import 'contacts_form.dart';
 
 class ContactsList extends StatefulWidget {
-  ContactsList(this.textTitle);
-
+  final ContactDao contactDao;
   final String textTitle;
 
+  ContactsList(this.textTitle, {@required this.contactDao});
+
   @override
-  _ContactsListState createState() => _ContactsListState(this.textTitle);
+  _ContactsListState createState() => _ContactsListState(this.textTitle, contactDao: contactDao);
 }
 
 class _ContactsListState extends State<ContactsList> {
-  final ContactDao _contactDao = ContactDao();
+  final ContactDao contactDao;
 
-  _ContactsListState(this.textTitle);
+  _ContactsListState(this.textTitle, {@required this.contactDao});
 
   final String textTitle;
 
@@ -32,13 +33,13 @@ class _ContactsListState extends State<ContactsList> {
       body: FutureBuilder<List<Contact>>(
         initialData: List(),
         future: Future.delayed(Duration(seconds: 1))
-            .then((value) => _contactDao.findAll()),
+            .then((value) => contactDao.findAll()),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return  Progress();
+              return Progress();
               break;
             case ConnectionState.active:
               break;

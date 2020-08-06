@@ -1,11 +1,16 @@
+import 'package:bytebank/components/feature_item.dart';
+import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/screens/transactions_list.dart';
 import 'package:flutter/material.dart';
 
 import 'contacts_list.dart';
 
 class Dashboard extends StatelessWidget {
+  final ContactDao contactDao;
+
   const Dashboard({
     Key key,
+    @required this.contactDao,
   }) : super(key: key);
 
   @override
@@ -35,7 +40,7 @@ class Dashboard extends StatelessWidget {
                         iconData: Icons.monetization_on,
                         textTitle: 'Transfer',
                         onTap: () {
-                          _showContactsList(context, 'Transfer');
+                          _showContactsList(context, 'Transfer', contactDao);
                         },
                       ),
                       FeatureItem(
@@ -56,11 +61,11 @@ class Dashboard extends StatelessWidget {
     );
   }
 
-  void _showContactsList(BuildContext context, String textTitle) {
+  void _showContactsList(BuildContext context, String textTitle, ContactDao contactDao) {
     {
       Navigator.of(context).push(
         (MaterialPageRoute(
-          builder: (context) => ContactsList(textTitle),
+          builder: (context) => ContactsList(textTitle, contactDao: contactDao,),
         )),
       );
     }
@@ -74,57 +79,5 @@ class Dashboard extends StatelessWidget {
         )),
       );
     }
-  }
-}
-
-class FeatureItem extends StatelessWidget {
-  const FeatureItem({
-    Key key,
-    @required IconData iconData,
-    @required this.textTitle,
-    @required this.onTap,
-  })  : iconData = iconData,
-        super(key: key);
-
-  final IconData iconData;
-  final String textTitle;
-  final Function onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Material(
-        child: InkWell(
-          onTap: () => onTap(),
-          child: Container(
-            height: 100,
-            width: 150,
-            color: Theme.of(context).primaryColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    iconData,
-                    color: Colors.white,
-                    size: 24.0,
-                  ),
-                  Text(
-                    textTitle,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

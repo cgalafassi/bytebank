@@ -1,17 +1,21 @@
+import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(BytebankApp());
+  runApp(BytebankApp(contactDao: ContactDao()));
 }
 
 class BytebankApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final ContactDao contactDao;
+
+  BytebankApp({@required this.contactDao});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Dashboard(),
+      home: Dashboard(contactDao: contactDao),
       theme: buildThemeData(),
     );
   }
