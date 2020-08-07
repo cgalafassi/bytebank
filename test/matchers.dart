@@ -6,3 +6,10 @@ bool featureItemMatcher(Widget widget, String name, IconData icon) {
       widget.textTitle == name &&
       widget.iconData == icon;
 }
+
+bool textFieldMatcher(Widget widget, String labelText) {
+  if (widget is TextField) {
+    return widget.decoration.labelText == labelText;
+  }
+  return false;
+}

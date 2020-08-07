@@ -8,7 +8,8 @@ class ContactsForm extends StatefulWidget {
   ContactsForm({@required this.contactDao});
 
   @override
-  _ContactsFormState createState() => _ContactsFormState(contactDao: contactDao);
+  _ContactsFormState createState() =>
+      _ContactsFormState(contactDao: contactDao);
 }
 
 class _ContactsFormState extends State<ContactsForm> {
@@ -56,9 +57,7 @@ class _ContactsFormState extends State<ContactsForm> {
                         int.tryParse(_accountNumberController.text);
 
                     final Contact newContact = Contact(0, name, accountNumber);
-                    contactDao
-                        .saveContact(newContact)
-                        .then((id) => Navigator.pop(context));
+                    _save(newContact, context);
                   },
                 ),
               ),
@@ -67,5 +66,10 @@ class _ContactsFormState extends State<ContactsForm> {
         ),
       ),
     );
+  }
+
+  void _save(Contact newContact, BuildContext context) async {
+    await contactDao.saveContact(newContact);
+    Navigator.pop(context);
   }
 }

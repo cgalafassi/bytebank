@@ -32,8 +32,7 @@ class _ContactsListState extends State<ContactsList> {
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: List(),
-        future: Future.delayed(Duration(seconds: 1))
-            .then((value) => contactDao.findAll()),
+        future: widget.contactDao.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
