@@ -1,38 +1,36 @@
 import 'package:bytebank/components/centered_message.dart';
 import 'package:bytebank/components/progress.dart';
-import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/transaction_form.dart';
+import 'package:bytebank/widget/app_dependencies.dart';
 import 'package:flutter/material.dart';
 
 import 'contacts_form.dart';
 
 class ContactsList extends StatefulWidget {
-  final ContactDao contactDao;
   final String textTitle;
 
-  ContactsList(this.textTitle, {@required this.contactDao});
+  ContactsList(this.textTitle);
 
   @override
-  _ContactsListState createState() => _ContactsListState(this.textTitle, contactDao: contactDao);
+  _ContactsListState createState() => _ContactsListState(this.textTitle);
 }
 
 class _ContactsListState extends State<ContactsList> {
-  final ContactDao contactDao;
-
-  _ContactsListState(this.textTitle, {@required this.contactDao});
-
   final String textTitle;
+
+  _ContactsListState(this.textTitle);
 
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(textTitle),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: List(),
-        future: widget.contactDao.findAll(),
+        future: dependencies.contactDao.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -47,7 +45,7 @@ class _ContactsListState extends State<ContactsList> {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   final Contact contact = contacts[index];
-                  return _ContactItem(contact, onClick: () {
+                  return ContactItem(contact, onClick: () {
                     Navigator.of(context).push(
                       (MaterialPageRoute(
                         builder: (context) => TransactionForm(contact),
@@ -67,7 +65,7 @@ class _ContactsListState extends State<ContactsList> {
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => ContactsForm(contactDao: contactDao,),
+                  builder: (context) => ContactsForm(),
                 ),
               )
               .then((id) => setState(() => widget.createState()));
@@ -78,11 +76,11 @@ class _ContactsListState extends State<ContactsList> {
   }
 }
 
-class _ContactItem extends StatelessWidget {
-  final Contact _contact;
+class ContactItem extends StatelessWidget {
+  final Contact contact;
   final Function onClick;
 
-  const _ContactItem(this._contact, {@required this.onClick});
+  const ContactItem(this.contact, {@required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +88,11 @@ class _ContactItem extends StatelessWidget {
       child: ListTile(
         onTap: () => onClick(),
         title: Text(
-          _contact.name,
+          contact.name,
           style: TextStyle(fontSize: 24.0),
         ),
         subtitle: Text(
-          _contact.accountNumber.toString(),
+          contact.accountNumber.toString(),
           style: TextStyle(fontSize: 16.0),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/screens/dashboard.dart';
+import 'package:bytebank/widget/app_dependencies.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +15,12 @@ class BytebankApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Dashboard(contactDao: contactDao),
-      theme: buildThemeData(),
+    return AppDependencies(
+      contactDao: contactDao,
+      child: MaterialApp(
+        home: Dashboard(),
+        theme: buildThemeData(),
+      ),
     );
   }
 

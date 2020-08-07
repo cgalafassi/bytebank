@@ -1,27 +1,21 @@
 import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/models/contact.dart';
+import 'package:bytebank/widget/app_dependencies.dart';
 import 'package:flutter/material.dart';
 
 class ContactsForm extends StatefulWidget {
-  final ContactDao contactDao;
-
-  ContactsForm({@required this.contactDao});
-
   @override
-  _ContactsFormState createState() =>
-      _ContactsFormState(contactDao: contactDao);
+  _ContactsFormState createState() => _ContactsFormState();
 }
 
 class _ContactsFormState extends State<ContactsForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountNumberController =
       TextEditingController();
-  final ContactDao contactDao;
-
-  _ContactsFormState({@required this.contactDao});
 
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('New contact'),
@@ -57,7 +51,7 @@ class _ContactsFormState extends State<ContactsForm> {
                         int.tryParse(_accountNumberController.text);
 
                     final Contact newContact = Contact(0, name, accountNumber);
-                    _save(newContact, context);
+                    _save(dependencies.contactDao, newContact, context);
                   },
                 ),
               ),
@@ -68,7 +62,8 @@ class _ContactsFormState extends State<ContactsForm> {
     );
   }
 
-  void _save(Contact newContact, BuildContext context) async {
+  void _save(
+      ContactDao contactDao, Contact newContact, BuildContext context) async {
     await contactDao.saveContact(newContact);
     Navigator.pop(context);
   }

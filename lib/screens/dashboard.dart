@@ -6,11 +6,8 @@ import 'package:flutter/material.dart';
 import 'contacts_list.dart';
 
 class Dashboard extends StatelessWidget {
-  final ContactDao contactDao;
-
   const Dashboard({
     Key key,
-    @required this.contactDao,
   }) : super(key: key);
 
   @override
@@ -40,7 +37,7 @@ class Dashboard extends StatelessWidget {
                         iconData: Icons.monetization_on,
                         textTitle: 'Transfer',
                         onTap: () {
-                          _showContactsList(context, 'Transfer', contactDao);
+                          _showContactsList(context, 'Transfer');
                         },
                       ),
                       FeatureItem(
@@ -61,11 +58,11 @@ class Dashboard extends StatelessWidget {
     );
   }
 
-  void _showContactsList(BuildContext context, String textTitle, ContactDao contactDao) {
+  void _showContactsList(BuildContext context, String textTitle) {
     {
       Navigator.of(context).push(
         (MaterialPageRoute(
-          builder: (context) => ContactsList(textTitle, contactDao: contactDao,),
+          builder: (context) => ContactsList(textTitle),
         )),
       );
     }

@@ -17,11 +17,11 @@ Future<void> tapOnTheRaisedButton(WidgetTester tester, String label) async {
   return tester.tap(createButton);
 }
 
-Future tapOnTheFloatingActionButton(
+Future<void> tapOnTheFloatingActionButton(
     WidgetTester tester, IconData iconData) async {
   final fabNewContact = find.widgetWithIcon(FloatingActionButton, iconData);
   expect(fabNewContact, findsOneWidget);
-  await tester.tap(fabNewContact);
+  return tester.tap(fabNewContact);
 }
 
 Future<void> insertValueTextField(
