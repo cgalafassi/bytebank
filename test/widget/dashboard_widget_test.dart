@@ -2,8 +2,8 @@ import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'matchers.dart';
-import 'mockers.dart';
+import '../matchers.dart';
+import '../mockers.dart';
 
 void main() {
   final mockContactDao = MockContactDao();
